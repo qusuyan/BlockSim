@@ -540,4 +540,4 @@ class Verification:
         writer = pd.ExcelWriter(file_name, engine='xlsxwriter')
         df1.to_excel(writer, sheet_name='InputConfig')
         df2.to_excel(writer, sheet_name='VerificationResults')
-        writer.save()
+        writer.close()

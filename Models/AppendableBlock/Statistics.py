@@ -131,7 +131,7 @@ class Statistics:
             df3.to_excel(writer, sheet_name='GatewayBlockchains')
             df4.to_excel(writer, sheet_name='GatewayTransactions')
             df5.to_excel(writer, sheet_name='transaction_latencies')
-        writer.save()
+        writer.close()
 
     # Reset the statistics data and clear global variables ready for the next simulation run
     def reset():

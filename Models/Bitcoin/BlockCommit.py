@@ -9,6 +9,8 @@ from Models.BlockCommit import BlockCommit as BaseBlockCommit
 
 class BlockCommit(BaseBlockCommit):
 
+    postpone_next_blk = {}
+
     # Handling and running Events
     def handle_event(event):
         if event.type == "create_block":
@@ -22,7 +24,11 @@ class BlockCommit(BaseBlockCommit):
         minerId = miner.id
         eventTime = event.time
         blockPrev = event.block.previous
-
+        postpone_time = BlockCommit.postpone_next_blk.get(minerId, 0)
+        if postpone_time > eventTime:
+            Scheduler.postpone_block_event(event.block, postpone_time)
+            return
+        
         if blockPrev == miner.last_block().id:
             Statistics.totalBlocks += 1 # count # of total blocks created!
             if p.hasTrans:
@@ -47,22 +53,22 @@ class BlockCommit(BaseBlockCommit):
         currentTime = event.time
         blockPrev = event.block.previous # previous block id
 
-
         node = p.NODES[event.node] # recipint
         lastBlockId= node.last_block().id # the id of last block
+        BlockCommit.postpone_next_blk[node.id] = currentTime + 2
 
         #### case 1: the received block is built on top of the last block according to the recipient's blockchain ####
         if blockPrev == lastBlockId:
             node.blockchain.append(event.block) # append the block to local blockchain
             if p.hasTrans and p.Ttechnique == "Full": BlockCommit.update_transactionsPool(node, event.block)
-            BlockCommit.generate_next_block(node,currentTime)# Start mining or working on the next block
+            BlockCommit.generate_next_block(node,currentTime + 2)# Start mining or working on the next block
 
          #### case 2: the received block is  not built on top of the last block ####
         else:
             depth = event.block.depth + 1
             if (depth > len(node.blockchain)):
                 BlockCommit.update_local_blockchain(node,miner,depth)
-                BlockCommit.generate_next_block(node,currentTime)# Start mining or working on the next block
+                BlockCommit.generate_next_block(node,currentTime + 2)# Start mining or working on the next block
 
             if p.hasTrans and p.Ttechnique == "Full": BlockCommit.update_transactionsPool(node,event.block) # not sure yet.
 

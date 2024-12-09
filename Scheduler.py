@@ -30,6 +30,13 @@ class Scheduler:
                           block)  # create the event
             Queue.add_event(event)  # add the event to the queue
 
+    def postpone_block_event(block, laterTime):
+        eventType = "create_block"
+        if laterTime <= p.simTime:
+            block.timestamp = laterTime
+            event = Event(eventType, block.miner, laterTime, block)
+            Queue.add_event(event)
+
     # Schedule a block receiving event for a node and add it to the event list
     def receive_block_event(recipient, block, blockDelay):
         receive_block_time = block.timestamp + blockDelay

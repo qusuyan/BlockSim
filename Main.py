@@ -80,8 +80,12 @@ def main():
                 p.Bsize/1000000, p.Tn/1000)
             # print all the simulation results in an excel file
             Statistics.print_to_excel(fname)
-        fname = "(Allverify)1day_{0}M_{1}K.xlsx".format(
-                p.Bsize/1000000, p.Tn/1000)
+        # fname = "(Allverify)1day_{0}M_{1}K.xlsx".format(
+        #         p.Bsize/1000000, p.Tn/1000)
+        import os
+        dir_name = os.environ["out_dir"]
+        run = int(os.environ["Run"])
+        fname = "{}/{}Nodes_Run{}.xlsx".format(dir_name, p.Nn, run)
         # print all the simulation results in an excel file
         Statistics.print_to_excel(fname)
         Statistics.reset2()  # reset profit results
