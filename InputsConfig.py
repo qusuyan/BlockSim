@@ -50,20 +50,25 @@ class InputsConfig:
         Tsize = 0.000546  # The average transaction size  in MB
 
         ''' Node Parameters '''
+        ecores = 1
+        ecore_util = {40: 0.1805459308, 60: 0.2092776686, 80: 0.2165030194, 100: 0.2304777673, 120: 0.2488423046, 140: 0.2656665582, 160: 0.2818680166}
         import os
         Nn = int(os.environ["Nn"])  # the total number of nodes in the network
-        NODES = []
+        # hash_power = ecores - ecore_util[Nn]
+        hash_power = ecores
         from Models.Bitcoin.Node import Node
+        NODES = []
         # here as an example we define three nodes by assigning a unique id for each one + % of hash (computing) power
         # NODES = [Node(id=i, hashPower=50) for i in range(Nn)]
         for i in range(Nn):
-            NODES.append(Node(id=i, hashPower=16))
+            NODES.append(Node(id=i, hashPower=hash_power))
 
         ''' Block Parameters '''
-        Binterval = 562.7888180965517 / Nn  # Average time (in seconds)for creating a block in the blockchain
+        block_time = (2**30) * 1.9 / 1000000
+        Binterval = block_time  # Average time (in seconds)for creating a block in the blockchain
         Bsize = 1.0  # The block size in MB
         import math
-        Bdelay = (math.ceil(math.log(Nn, 5)) / 2 - 1) * 2 + 0.04  # average block propogation delay in seconds, #Ref: https://bitslog.wordpress.com/2016/04/28/uncle-mining-an-ethereum-consensus-protocol-flaw/
+        Bdelay = (math.ceil(math.log(Nn, 5)) / 2 - 0.5) * 2  # average block propogation delay in seconds, #Ref: https://bitslog.wordpress.com/2016/04/28/uncle-mining-an-ethereum-consensus-protocol-flaw/
         Breward = 12.5  # Reward for mining a block
 
         ''' Simulation Parameters '''

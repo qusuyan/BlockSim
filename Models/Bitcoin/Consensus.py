@@ -12,8 +12,8 @@ class Consensus(BaseConsensus):
     """
     def Protocol(miner):
         ##### Start solving a fresh PoW on top of last block appended #####
-        TOTAL_HASHPOWER = sum([miner.hashPower for miner in p.NODES])
-        hashPower = miner.hashPower/TOTAL_HASHPOWER
+        # TOTAL_HASHPOWER = sum([miner.hashPower for miner in p.NODES])
+        hashPower = miner.hashPower
         return random.expovariate(hashPower * 1/p.Binterval)
 
 

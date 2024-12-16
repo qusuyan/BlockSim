@@ -30,7 +30,7 @@ class Scheduler:
                           block)  # create the event
             Queue.add_event(event)  # add the event to the queue
 
-    def postpone_block_event(block, laterTime):
+    def postpone_create_block_event(block, laterTime):
         eventType = "create_block"
         if laterTime <= p.simTime:
             block.timestamp = laterTime
@@ -42,6 +42,11 @@ class Scheduler:
         receive_block_time = block.timestamp + blockDelay
         if receive_block_time <= p.simTime:
             e = Event("receive_block", recipient.id, receive_block_time, block)
+            Queue.add_event(e)
+
+    def postpone_receive_block_event(recipient, block, laterTime):
+        if laterTime <= p.simTime:
+            e = Event("receive_block", recipient.id, laterTime, block)
             Queue.add_event(e)
 
     # Schedule a block creation event for a gateway - AppendableBlock model

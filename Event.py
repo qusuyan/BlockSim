@@ -16,6 +16,9 @@ class Event(object):
         self.time = time
         self.block = block
 
+    def __repr__(self):
+        return f"{{time: {self.time}, type: {self.type}}}"
+
 class Queue:
     event_list=[] # this is where future events will be stored
     def add_event(event):
@@ -24,6 +27,7 @@ class Queue:
         del Queue.event_list[0]
     def get_next_event():
         Queue.event_list.sort(key=operator.attrgetter('time'), reverse=False) # sort events -> earliest one first
+        # print(f"called: {Queue.event_list}")
         return Queue.event_list[0]
     def size():
         return len(Queue.event_list)

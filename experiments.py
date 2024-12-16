@@ -4,9 +4,9 @@ import os, subprocess
 import pandas as pd
 import statistics
 
-nn_range = range(10, 121, 10)
-runs = 20
-out_dir = "results/exp6/"
+nn_range = range(40, 161, 20)
+runs = 40
+out_dir = "results/exp9/"
 os.makedirs(out_dir, exist_ok=True)
 
 # run experiments

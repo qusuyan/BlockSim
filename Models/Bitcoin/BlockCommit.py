@@ -26,9 +26,9 @@ class BlockCommit(BaseBlockCommit):
         blockPrev = event.block.previous
         postpone_time = BlockCommit.postpone_next_blk.get(minerId, 0)
         if postpone_time > eventTime:
-            Scheduler.postpone_block_event(event.block, postpone_time)
+            Scheduler.postpone_create_block_event(event.block, postpone_time)
             return
-        
+
         if blockPrev == miner.last_block().id:
             Statistics.totalBlocks += 1 # count # of total blocks created!
             if p.hasTrans:
@@ -55,6 +55,11 @@ class BlockCommit(BaseBlockCommit):
 
         node = p.NODES[event.node] # recipint
         lastBlockId= node.last_block().id # the id of last block
+        postpone_time = BlockCommit.postpone_next_blk.get(minerId, 0)
+        if postpone_time > currentTime:
+            Scheduler.postpone_receive_block_event(node, event.block, postpone_time)
+            return
+
         BlockCommit.postpone_next_blk[node.id] = currentTime + 2
 
         #### case 1: the received block is built on top of the last block according to the recipient's blockchain ####
@@ -75,7 +80,7 @@ class BlockCommit(BaseBlockCommit):
     # Upon generating or receiving a block, the miner start working on the next block as in POW
     def generate_next_block(node,currentTime):
 	    if node.hashPower > 0:
-                 blockTime = currentTime + c.Protocol(node) # time when miner x generate the next block
+                 blockTime = currentTime + 2 + c.Protocol(node) # time when miner x generate the next block
                  Scheduler.create_block_event(node,blockTime)
 
     def generate_initial_events():
